@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,7 +14,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DeleteIcon, MoreVertical, TrashIcon } from "lucide-react";
+import {
+  FileTextIcon,
+  GanttChartIcon,
+  ImageIcon,
+  MoreVertical,
+  TrashIcon,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,11 +30,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useToast } from "../ui/use-toast";
+import Image from "next/image";
 
 const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
   const { toast } = useToast();
@@ -81,19 +87,47 @@ const FileCardActions = ({ file }: { file: Doc<"files"> }) => {
 };
 
 const FileCard = ({ file }: { file: Doc<"files"> }) => {
+  const typeIcons = {
+    image: <ImageIcon />,
+    pdf: <FileTextIcon />,
+    csv: <GanttChartIcon />,
+  } as Record<Doc<"files">["type"], ReactNode>;
+
   return (
     <Card>
-      <CardHeader className="relative">
-        <CardTitle>{file.name}</CardTitle>
-        <div className="absolute right-2 top-2">
-          <FileCardActions file={file} />
-        </div>
+      <CardHeader>
+        <CardTitle>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              {typeIcons[file.type]} <p>{file.name}</p>
+            </div>
+            <div>
+              <FileCardActions file={file} />
+            </div>
+          </div>
+        </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
+      <CardContent className="h-[200px] flex justify-center items-center">
+        {file.type === "image" && (
+          <Image
+            alt={file.name}
+            width="200"
+            height="100"
+            src={file.imageUrl || ""}
+          />
+        )}
+
+        {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
+        {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
-      <CardFooter>
-        <Button>Download</Button>
+      <CardFooter className="flex justify-center">
+        <Button
+          onClick={() => {
+            window.open(file.imageUrl, "_blank");
+          }}
+        >
+          Download
+        </Button>
       </CardFooter>
     </Card>
   );
