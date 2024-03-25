@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Doc, Id } from "@/convex/_generated/dataModel";
-import { Button } from "../ui/button";
+import { format, formatDistance, formatRelative, subDays } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  FileIcon,
   FileTextIcon,
   GanttChartIcon,
   ImageIcon,
@@ -34,12 +35,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useToast } from "../ui/use-toast";
 import Image from "next/image";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import { Protect } from "@clerk/nextjs";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const FileCardActions = ({
   file,
@@ -86,6 +88,15 @@ const FileCardActions = ({
           <MoreVertical />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          <DropdownMenuItem
+            onClick={() => {
+              window.open(file.imageUrl, "_blank");
+            }}
+            className="flex gap-1 items-center cursor-pointer"
+          >
+            <FileIcon className="w-4 h-4" /> Download
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={() => {
               toggleFavorite({ fileId: file._id });
@@ -142,6 +153,10 @@ const FileCard = ({
   file: Doc<"files">;
   favorites: Doc<"favorites">[];
 }) => {
+  const userProfile = useQuery(api.users.getUserProfile, {
+    userId: file.userId,
+  });
+
   const typeIcons = {
     image: <ImageIcon />,
     pdf: <FileTextIcon />,
@@ -152,8 +167,8 @@ const FileCard = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          <div className="flex justify-between items-center">
+        <CardTitle className="text-base font-normal">
+          <div className="flex justify-between items-center ">
             <div className="flex items-center gap-2">
               {typeIcons[file.type]} <p>{file.name}</p>
             </div>
@@ -176,14 +191,17 @@ const FileCard = ({
         {file.type === "csv" && <GanttChartIcon className="w-20 h-20" />}
         {file.type === "pdf" && <FileTextIcon className="w-20 h-20" />}
       </CardContent>
-      <CardFooter className="flex justify-center">
-        <Button
-          onClick={() => {
-            window.open(file.imageUrl, "_blank");
-          }}
-        >
-          Download
-        </Button>
+      <CardFooter className="flex justify-between items-center">
+        <div className="flex gap-2 text-xs text-gray-700 w-40 items-center">
+          <Avatar className="w-6 h-6">
+            <AvatarImage src={userProfile?.image} />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          {userProfile?.name}
+        </div>
+        <div className="text-xs text-gray-700">
+          Uploaded on {formatRelative(new Date(file._creationTime), new Date())}
+        </div>
       </CardFooter>
     </Card>
   );
