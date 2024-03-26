@@ -83,7 +83,7 @@ export default function FileBrowser({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8 hidden md:flex lg:flex">
+      <div className="flex justify-between mb-4 items-center hidden md:flex lg:flex">
         <h1 className="text-4xl font-bold">{title}</h1>
         <SearchBar setQuery={setQuery} query={query} />
         <UploadButton />
