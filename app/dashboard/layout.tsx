@@ -6,12 +6,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <main className="container mx-auto pt-12">
-      <div className="flex gap-8">
+    <main className="mx-auto pt-12 mt-[60px] pb-[170px] md:pb-[140px] lg:pb-[140px]  flex h-screen px-4 md:px-4 lg:px-8">
+      <div className="hidden lg:flex">
         <SideNav />
-
-        <div className="w-full">{children}</div>
       </div>
+
+      <div className="w-full overflow-y-auto">{children}</div>
     </main>
   );
 }

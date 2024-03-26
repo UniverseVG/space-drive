@@ -83,10 +83,38 @@ export default function FileBrowser({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex justify-between items-center mb-8 hidden md:flex lg:flex">
         <h1 className="text-4xl font-bold">{title}</h1>
         <SearchBar setQuery={setQuery} query={query} />
         <UploadButton />
+      </div>
+      <div className="flex justify-between items-center mb-4 md:hidden  lg:hidden">
+        <h1 className="text-2xl font-bold">{title}</h1>
+
+        <UploadButton />
+      </div>
+      <div className="md:hidden  lg:hidden">
+        <SearchBar setQuery={setQuery} query={query} />
+      </div>
+
+      <div className="flex gap-2 items-center my-4 md:hidden  lg:hidden ">
+        <Label htmlFor="type-select">Type Filter</Label>
+        <Select
+          value={type}
+          onValueChange={(newType) => {
+            setType(newType as any);
+          }}
+        >
+          <SelectTrigger id="type-select" className="w-[180px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="image">Image</SelectItem>
+            <SelectItem value="csv">CSV</SelectItem>
+            <SelectItem value="pdf">PDF</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <Tabs defaultValue="grid">
@@ -101,7 +129,7 @@ export default function FileBrowser({
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center hidden md:flex lg:flex">
             <Label htmlFor="type-select">Type Filter</Label>
             <Select
               value={type}
@@ -129,7 +157,7 @@ export default function FileBrowser({
           </div>
         )}
         <TabsContent value="grid">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid lg:grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-4">
             {files?.map((file) => {
               return (
                 <FileCard

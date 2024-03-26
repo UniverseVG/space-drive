@@ -12,8 +12,8 @@ import Link from "next/link";
 
 const Header = () => {
   return (
-    <div className="border-b py-4 bg-gray-50">
-      <div className="items-center container mx-auto justify-between flex">
+    <div className="fixed top-0 w-full z-10 border-b py-4 bg-gray-50 hidden lg:block">
+      <div className="items-center mx-auto justify-between flex px-8">
         <Link href="/" className="flex gap-2 items-center text-xl">
           <Image
             src="/logo.png"
