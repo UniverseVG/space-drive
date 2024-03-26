@@ -4,7 +4,7 @@ import { v } from "convex/values";
 import { Webhook } from "svix";
 
 import { internalAction } from "./_generated/server";
-import { WebhookEvent } from "@clerk/nextjs/dist/types/server";
+import type { WebhookEvent } from "@clerk/nextjs/server";
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || ``;
 
